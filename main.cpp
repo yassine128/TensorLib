@@ -3,8 +3,8 @@
 #include <chrono>
 
 int main() {
-    Tensor tensor1(1, 2);
-    Tensor tensor2(1, 4);
+    Tensor tensor1(2, 2);
+    Tensor tensor2(2, 2);
 
     auto start = std::chrono::high_resolution_clock::now();
     Tensor tadd = tensor1 * tensor2; 

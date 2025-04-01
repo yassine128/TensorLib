@@ -111,6 +111,30 @@ class Tensor {
             return tmul; 
         }
 
+        Tensor matMul(Tensor& other) {
+            auto [rowsThis, colsThis] = shape();
+            auto [rowsOther, colsOther] = other.shape();
+
+            assert(colsThis == rowsOther); 
+            Tensor mat(rowsThis, colsOther);
+
+            for (int i = 0; i < rowsThis; ++i) {
+                for (int j = 0; j < colsOther; ++j) {
+                    mat(i, j) = 0;
+                }
+            }
+
+            for (int i = 0; i < rowsThis; ++i) {
+                for (int j = 0; j < colsOther; ++j) {
+                    for (int k = 0; k < colsThis; ++k) {
+                        mat(i, j) += this->operator()(i, k) * other(k, j);
+                    }
+                }
+            }
+
+            return mat; 
+        }
+
     private:
         std::vector<float>& getTensor() { 
             return tensor_; 
