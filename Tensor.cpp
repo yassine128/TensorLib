@@ -50,11 +50,65 @@ class Tensor {
             auto [rows, cols] = shape();
             Tensor tadd(rows, cols);
 
-            for (auto i = 0; i < tensor_.size(); ++i) {
-                tadd.tensor_[i] = other.tensor_[i] + tensor_[i];
+            int size = tensor_.size(); 
+            for (int i = 0; i < size; ++i) {
+                tadd.tensor_[i] = tensor_[i] + other.tensor_[i];
             }
 
             return tadd; 
+        }
+        
+        Tensor operator-(const Tensor& other) {
+            assert(tensor_.size() == other.tensor_.size());
+            auto [rows, cols] = shape();
+            Tensor tsub(rows, cols);
+
+            int size = tensor_.size(); 
+            for (int i = 0; i < size; ++i) {
+                tsub.tensor_[i] = tensor_[i] - other.tensor_[i];
+            }
+
+            return tsub; 
+        }
+
+        Tensor operator*(Tensor& other) {
+            int thisSize = tensor_.size(); 
+            int otherSize = other.tensor_.size();
+
+            assert(thisSize == otherSize || !(thisSize % otherSize) || !(otherSize % thisSize));
+            auto [rowsThis, colsThis] = shape();
+            auto [rowsOther, colsOther] = other.shape();
+            int max_rows = std::max(rowsThis, rowsOther);
+            int max_cols = std::max(colsThis, colsOther);
+            Tensor tmul(max_rows, max_cols);
+
+            int maxIterSize = std::max(thisSize, otherSize); 
+
+            for (int i = 0; i < maxIterSize; ++i) {
+                tmul.tensor_[i] = tensor_[i % thisSize] * other.tensor_[i % otherSize];
+            }
+
+            return tmul; 
+        }
+
+        Tensor operator/(Tensor& other) {
+            int thisSize = tensor_.size(); 
+            int otherSize = other.tensor_.size();
+
+            assert(thisSize == otherSize || !(thisSize % otherSize) || !(otherSize % thisSize));
+            auto [rowsThis, colsThis] = shape();
+            auto [rowsOther, colsOther] = other.shape();
+            int max_rows = std::max(rowsThis, rowsOther);
+            int max_cols = std::max(colsThis, colsOther);
+            Tensor tmul(max_rows, max_cols);
+
+            int maxIterSize = std::max(thisSize, otherSize); 
+
+            for (int i = 0; i < maxIterSize; ++i) {
+                tmul.tensor_[i] = tensor_[i % thisSize] / other.tensor_[i % otherSize];
+            }
+
+            return tmul; 
         }
 
     private:
@@ -63,7 +117,8 @@ class Tensor {
         }
 
         std::vector<float> tensor_;
-        int rows_, cols_; 
+        int rows_; 
+        int cols_; 
 };
 
 #endif // TENSOR_CPP
